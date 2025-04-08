@@ -25,7 +25,14 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
-import { Clock, BookOpen, Calendar, Check, ArrowRight } from "lucide-react"
+import {
+  Clock,
+  BookOpen,
+  Calendar,
+  Check,
+  ArrowRight,
+  Menu,
+} from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useState } from "react"
 import {
@@ -53,6 +60,16 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { siteConfig } from "@/config/site-config"
 import Image from "next/image"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 // Form schema for lead capture
 const leadFormSchema = z.object({
@@ -158,11 +175,20 @@ const plans = [
   },
 ]
 
+const navigationItems = [
+  { name: "Recursos", path: "#features" },
+  { name: "Planos", path: "#pricing" },
+  { name: "Depoimentos", path: "#testimonials" },
+]
+
 const LandingPage = () => {
   const navigate = useRouter()
   const [openDialog, setOpenDialog] = useState(false)
   // const [leadCaptured, setLeadCaptured] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  const isMobile = useIsMobile()
 
   // Form for lead capture
   const form = useForm<LeadFormValues>({
@@ -210,96 +236,157 @@ const LandingPage = () => {
       {/* Header */}
       <header className="w-full py-4 px-6 bg-background/95 backdrop-blur sticky top-0 z-10 border-b">
         <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center ">
+          <div className="flex items-center">
             <Image
               alt={siteConfig.description}
               src={"/logo-fastura.png"}
               width={100}
               height={100}
             />
-            {/* <Clock className="h-6 w-6 text-fastsmart-purple" /> */}
             <span className="font-bold text-xl">{siteConfig.name}</span>
           </div>
 
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Recursos</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid gap-3 p-4 w-[400px] md:w-[500px] md:grid-cols-2">
-                    {features.map((feature) => (
-                      <li key={feature.title} className="row-span-3">
-                        <NavigationMenuLink asChild>
-                          <a
-                            className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
-                            href="#features"
-                            onClick={() =>
-                              console.log(
-                                `User clicked on feature: ${feature.title}`
-                              )
-                            }
-                          >
-                            <feature.icon className="h-6 w-6 text-fastsmart-purple" />
-                            <div className="mb-2 mt-4 text-lg font-medium">
-                              {feature.title}
-                            </div>
-                            <p className="text-sm leading-tight text-muted-foreground">
-                              {feature.description}
-                            </p>
-                          </a>
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuTrigger>Planos</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
-                    {plans.map((plan) => (
-                      <li key={plan.name}>
-                        <NavigationMenuLink asChild>
-                          <a
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                            href="#pricing"
-                            onClick={() =>
-                              console.log(
-                                `Nav menu: User clicked on plan ${plan.id}`
-                              )
-                            }
-                          >
-                            <div className="text-sm font-medium leading-none">
-                              {plan.name}
-                            </div>
-                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                              {plan.description}
-                            </p>
-                          </a>
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <a
-                  href="#testimonials"
-                  className={navigationMenuTriggerStyle()}
-                >
-                  Depoimentos
-                </a>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
+          <div className="hidden md:block">
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>Recursos</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid gap-3 p-4 w-[400px] md:w-[500px] md:grid-cols-2">
+                      {features.map((feature) => (
+                        <li key={feature.title} className="row-span-3">
+                          <NavigationMenuLink asChild>
+                            <a
+                              className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                              href="#features"
+                              onClick={() =>
+                                console.log(
+                                  `User clicked on feature: ${feature.title}`
+                                )
+                              }
+                            >
+                              <feature.icon className="h-6 w-6 text-fastsmart-purple" />
+                              <div className="mb-2 mt-4 text-lg font-medium">
+                                {feature.title}
+                              </div>
+                              <p className="text-sm leading-tight text-muted-foreground">
+                                {feature.description}
+                              </p>
+                            </a>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger>Planos</NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <ul className="grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2">
+                      {plans.map((plan) => (
+                        <li key={plan.name}>
+                          <NavigationMenuLink asChild>
+                            <a
+                              className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                              href="#pricing"
+                              onClick={() =>
+                                console.log(
+                                  `Nav menu: User clicked on plan ${plan.id}`
+                                )
+                              }
+                            >
+                              <div className="text-sm font-medium leading-none">
+                                {plan.name}
+                              </div>
+                              <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                                {plan.description}
+                              </p>
+                            </a>
+                          </NavigationMenuLink>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                  <a
+                    href="#testimonials"
+                    className={navigationMenuTriggerStyle()}
+                  >
+                    Depoimentos
+                  </a>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
+          </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="md:hidden">
+            <Drawer open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+              <DrawerTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                </Button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader>
+                  <DrawerTitle>Menu</DrawerTitle>
+                </DrawerHeader>
+                <div className="px-4 py-2 flex flex-col gap-2">
+                  {navigationItems.map((item) => (
+                    <DrawerClose key={item.name} asChild>
+                      <Button
+                        variant="ghost"
+                        className="w-full justify-start"
+                        onClick={() => {
+                          setMobileMenuOpen(false)
+                          window.location.href = item.path
+                        }}
+                      >
+                        {item.name}
+                      </Button>
+                    </DrawerClose>
+                  ))}
+                  <div className="border-t my-2"></div>
+                  <DrawerClose asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        setMobileMenuOpen(false)
+                        navigate.push("/dashboard/onboarding")
+                      }}
+                    >
+                      Login
+                    </Button>
+                  </DrawerClose>
+                  <DrawerClose asChild>
+                    <Button
+                      className="w-full"
+                      onClick={() => {
+                        setMobileMenuOpen(false)
+                        setOpenDialog(true)
+                      }}
+                    >
+                      Começar Grátis
+                    </Button>
+                  </DrawerClose>
+                </div>
+                <DrawerFooter>
+                  <DrawerClose asChild>
+                    <Button variant="outline">Fechar</Button>
+                  </DrawerClose>
+                </DrawerFooter>
+              </DrawerContent>
+            </Drawer>
+          </div>
+
+          <div className="hidden md:flex items-center space-x-4">
             <Button
               variant="outline"
               size="sm"
               onClick={() => {
                 console.log("User clicked login")
-                navigate.push("/login")
+                navigate.push("/dashboard/onboarding")
               }}
             >
               Login
@@ -370,7 +457,7 @@ const LandingPage = () => {
                         variant="outline"
                         onClick={() => {
                           setOpenDialog(false)
-                          navigate.push("/onboarding")
+                          navigate.push("/dashboard/onboarding")
                         }}
                       >
                         Pular
