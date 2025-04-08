@@ -40,7 +40,9 @@ type FormValues = z.infer<typeof formSchema>
 const Profile = () => {
   const navigate = useRouter()
   const { currentPlan } = useFasting()
-  const [submitted, setSubmitted] = useState(false)
+  // const [submitted, setSubmitted] = useState(false)
+
+  console.log("currentPlan", currentPlan)
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -53,23 +55,8 @@ const Profile = () => {
   })
 
   const onSubmit = (data: FormValues) => {
-    // In a real app, this would send data to your backend
-    console.log("User profile data:", data)
-
-    // Log which plan the user was interested in
-    console.log("User selected plan:", currentPlan?.id)
-
-    // Show success message
-    toast.success("Perfil salvo com sucesso! Entraremos em contato em breve.")
-    setSubmitted(true)
-
-    // In a real implementation, you would save this to your database
-    localStorage.setItem("userProfile", JSON.stringify(data))
-
-    // Navigate back to plans page after submission
-    setTimeout(() => {
-      navigate.push("/dashboard/plans")
-    }, 2000)
+    // toast.success("Perfil salvo com sucesso! Entraremos em contato em breve.")
+    // setSubmitted(true)
   }
 
   return (

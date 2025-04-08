@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 
 import { Card, CardContent } from "@/components/ui/card"
@@ -47,19 +47,32 @@ const OnboardingSteps = [
 ]
 
 const Onboarding = () => {
+  const router = useRouter()
+  const [mounted, setMounted] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null)
   const { plans, selectPlan, currentPlan } = useFasting()
-  const navigate = useRouter()
+
+  // Executar apenas no client-side
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hasCompletedOnboarding = localStorage.getItem(
+        "hasCompletedOnboarding"
+      )
+      if (hasCompletedOnboarding === "true") {
+        router.push("/")
+      }
+
+      setMounted(true)
+    }
+  }, [router])
 
   const handleNext = () => {
     if (currentStep < OnboardingSteps.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
-      if (typeof window !== "undefined") {
-        localStorage.setItem("hasCompletedOnboarding", "true")
-      }
-      navigate.push("/")
+      localStorage.setItem("hasCompletedOnboarding", "true")
+      router.push("/")
     }
   }
 
@@ -72,6 +85,9 @@ const Onboarding = () => {
   }
 
   const currentStepData = OnboardingSteps[currentStep]
+
+  // Não renderizar nada até montagem no client-side
+  if (!mounted) return null
 
   return (
     <div className="min-h-screen flex flex-col justify-center px-4 py-12 bg-gradient-to-b from-background to-fastsmart-purple/5">

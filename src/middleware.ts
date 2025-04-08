@@ -1,11 +1,15 @@
 import type { NextRequest } from "next/server"
 import { NextResponse } from "next/server"
+import NextAuth from "next-auth"
+import authConfig from "./config/auth-config"
+
+const { auth } = NextAuth(authConfig)
 
 // Domínios essenciais permitidos por padrão na CSP
 const NECESSARY_DOMAIN =
   "*.sentry.io http://localhost:* http://127.0.0.1:* https://analytics.google.com googletagmanager.com *.googletagmanager.com https://www.google-analytics.com https://api.github.com"
 
-export function middleware(request: NextRequest) {
+export default auth(async function middleware(request: NextRequest) {
   // Habilita CSP apenas em produção e se existir uma whitelist configurada
   const isWhiteListEnabled =
     !!process.env.NEXT_PUBLIC_CSP_WHITELIST &&
@@ -60,16 +64,19 @@ export function middleware(request: NextRequest) {
   )
 
   return response
-}
+})
+// export function middleware(request: NextRequest) {
 
-// export const config = {
-//   matcher: [
-//     // Aplica o middleware em todas as rotas exceto:
-//     // - Arquivos estáticos do Next.js
-//     // - Otimização de imagens
-//     // - Favicon
-//     {
-//       source: "/((?!_next/static|_next/image|favicon.ico).*)",
-//     },
-//   ],
 // }
+
+export const config = {
+  matcher: [
+    // Aplica o middleware em todas as rotas exceto:
+    // - Arquivos estáticos do Next.js
+    // - Otimização de imagens
+    // - Favicon
+    {
+      source: "/((?!_next/static|_next/image|favicon.ico).*)",
+    },
+  ],
+}

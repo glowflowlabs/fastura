@@ -20,19 +20,18 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { toast } from "sonner"
-import { useState } from "react"
 import { useRouter } from "next/navigation"
 
 const Plans = () => {
   const { plans, currentPlan, selectPlan, startFast, fastingState } =
     useFasting()
   const router = useRouter()
-  const [planClicked, setPlanClicked] = useState<string | null>(null)
+  // const [planClicked, setPlanClicked] = useState<string | null>(null)
 
   const handleSelectPlan = (planId: string) => {
     // Track which plan was selected
     console.log(`User selected plan: ${planId}`)
-    setPlanClicked(planId)
+    // setPlanClicked(planId)
 
     // Analytics tracking would go here in a real app
     selectPlan(planId)
@@ -50,7 +49,7 @@ const Plans = () => {
   }
 
   const handleStartFast = () => {
-    if (currentPlan) {
+    if (typeof window !== "undefined" && currentPlan) {
       // Check if user has provided profile info
       const userProfile = localStorage.getItem("userProfile")
 

@@ -63,21 +63,10 @@ const Register = () => {
     console.log("Register attempt with:", data)
 
     try {
-      // This is a mock registration for MVP testing
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // For MVP tracking, log which users registered
-      console.log("MVP TRACKING: New user registration")
-
-      // Store user data for MVP tracking
-      localStorage.setItem("userName", data.name)
-      localStorage.setItem("userEmail", data.email)
-      localStorage.setItem("registrationDate", new Date().toISOString())
-
-      toast.success("Conta criada com sucesso! Bem-vindo ao FastSmart.")
-
-      // Navigate to onboarding
-      navigate.push("/onboarding")
+      // toast.success("Conta criada com sucesso! Bem-vindo ao FastSmart.")
+      toast.error(
+        "Não implementado ainda. Você pode usar o FastSmart como convidado por enquanto."
+      )
     } catch (error) {
       console.error("Registration error:", error)
       toast.error("Erro ao criar conta. Tente novamente.")

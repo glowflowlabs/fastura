@@ -1,5 +1,11 @@
 "use client"
-import React, { createContext, useState, useContext, useEffect } from "react"
+import React, {
+  createContext,
+  useState,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react"
 import { toast } from "@/components/ui/use-toast"
 
 type FastingPlan = {
@@ -96,7 +102,7 @@ const initialFastingState: FastingState = {
   remainingTime: 0,
 }
 
-const FastingContext = createContext<FastingContextType>({
+export const FastingContext = createContext<FastingContextType>({
   plans: defaultPlans,
   fastingState: initialFastingState,
   startFast: () => {},
@@ -116,6 +122,7 @@ export const useFasting = () => {
 export const FastingProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [isClient, setIsClient] = useState(false)
   const [plans] = useState<FastingPlan[]>(defaultPlans)
   const [fastingState, setFastingState] = useState<FastingState>(() => {
     if (typeof window === "undefined") return initialFastingState
@@ -178,7 +185,7 @@ export const FastingProvider: React.FC<{ children: React.ReactNode }> = ({
     })
   }
 
-  const endFast = () => {
+  const endFast = useCallback(() => {
     if (!fastingState.isFasting) return
 
     const elapsedTime = fastingState.startTime
@@ -196,7 +203,7 @@ export const FastingProvider: React.FC<{ children: React.ReactNode }> = ({
       title: "Jejum finalizado!",
       description: `Você completou ${hours} horas de jejum. Parabéns!`,
     })
-  }
+  }, [fastingState.isFasting, fastingState.startTime, fastingState.currentPlan])
 
   const logWater = () => {
     setWaterLogs((prev) => prev + 1)
@@ -272,7 +279,13 @@ export const FastingProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       if (timerId) clearInterval(timerId)
     }
-  }, [fastingState.isFasting, fastingState.startTime])
+  }, [
+    endFast,
+    fastingState.currentPlan,
+    fastingState.endTime,
+    fastingState.isFasting,
+    fastingState.startTime,
+  ])
 
   // Save state to localStorage
   useEffect(() => {
@@ -299,6 +312,13 @@ export const FastingProvider: React.FC<{ children: React.ReactNode }> = ({
       localStorage.setItem("lastWaterLog", lastWaterLog.toISOString())
     }
   }, [lastWaterLog])
+
+  useEffect(() => {
+    setIsClient(true)
+    // Qualquer acesso ao localStorage aqui
+  }, [])
+
+  if (!isClient) return null
 
   return (
     <FastingContext.Provider

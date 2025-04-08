@@ -161,7 +161,7 @@ const plans = [
 const LandingPage = () => {
   const navigate = useRouter()
   const [openDialog, setOpenDialog] = useState(false)
-  const [leadCaptured, setLeadCaptured] = useState(false)
+  // const [leadCaptured, setLeadCaptured] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
 
   // Form for lead capture
@@ -190,11 +190,12 @@ const LandingPage = () => {
     console.log("Selected plan:", selectedPlan)
 
     // Store user data
+
     localStorage.setItem("userLead", JSON.stringify(data))
 
     // Close dialog and show success message
     setOpenDialog(false)
-    setLeadCaptured(true)
+    // setLeadCaptured(true)
 
     toast.success("Obrigado pelo seu interesse! Redirecionando...")
 

@@ -29,6 +29,7 @@ import { Mail, Lock, ArrowRight } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { siteConfig } from "@/config/site-config"
+import { signIn } from "next-auth/react"
 
 const formSchema = z.object({
   email: z.string().email({ message: "Email inválido" }),
@@ -41,7 +42,6 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>
 
 const Login = () => {
-  const navigate = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
   const form = useForm<FormValues>({
@@ -56,26 +56,17 @@ const Login = () => {
   const onSubmit = async (data: FormValues) => {
     setIsLoading(true)
 
-    // Simulating API call
-    console.log("Login attempt with:", data)
-
     try {
       // This is a mock login for MVP testing
       // In a real implementation, this would call an authentication API
-      await new Promise((resolve) => setTimeout(resolve, 1000))
+      // await new Promise((resolve) => setTimeout(resolve, 1000))
 
       // For MVP, we'll just navigate to dashboard on any login attempt
-      toast.success("Login realizado com sucesso!")
+      // toast.success("Login realizado com sucesso!")
 
-      // For MVP tracking, log which users logged in
-      console.log("MVP TRACKING: User login")
-
-      // Storing email for tracking purposes in this MVP
-      localStorage.setItem("userEmail", data.email)
-      localStorage.setItem("lastLoginDate", new Date().toISOString())
-
+      toast.error("Não implementado ainda")
       // Navigate to dashboard
-      navigate.push("/dashboard")
+      // navigate.push("/dashboard")
     } catch (error) {
       console.error("Login error:", error)
       toast.error("Erro ao fazer login. Tente novamente.")
@@ -219,6 +210,19 @@ const Login = () => {
 
             <div className="grid grid-cols-2 gap-4 w-full">
               <Button
+                onClick={() => {
+                  signIn("google", {
+                    callbackUrl: "/dashboard",
+                    redirect: true,
+                  })
+                    .then(() => {
+                      toast.success("Redirecionado para Login com Google!")
+                    })
+                    .catch((error) => {
+                      console.error("Google login error:", error)
+                      toast.error("Erro ao fazer login com Google.")
+                    })
+                }}
                 variant="outline"
                 className="w-full"
                 type="button"

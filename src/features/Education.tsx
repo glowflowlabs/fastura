@@ -1,3 +1,4 @@
+"use client"
 import AppLayout from "@/components/layout/AppLayout"
 import {
   Card,
@@ -7,8 +8,22 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useEffect, useState } from "react"
 
 const Education = () => {
+  const [isClient, setIsClient] = useState(false)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  if (!isClient)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Carregando...
+      </div>
+    )
+
   return (
     <AppLayout>
       <div className="space-y-6 pb-10">

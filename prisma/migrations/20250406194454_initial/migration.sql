@@ -62,18 +62,6 @@ CREATE TABLE "authenticator" (
     CONSTRAINT "authenticator_pkey" PRIMARY KEY ("userId","credentialID")
 );
 
--- CreateTable
-CREATE TABLE "tasks" (
-    "id" TEXT NOT NULL,
-    "titulo" TEXT NOT NULL,
-    "completa" BOOLEAN NOT NULL DEFAULT false,
-    "created_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "usuario_id" TEXT,
-
-    CONSTRAINT "tasks_pkey" PRIMARY KEY ("id")
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
@@ -91,6 +79,3 @@ ALTER TABLE "session" ADD CONSTRAINT "session_userId_fkey" FOREIGN KEY ("userId"
 
 -- AddForeignKey
 ALTER TABLE "authenticator" ADD CONSTRAINT "authenticator_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "tasks" ADD CONSTRAINT "tasks_usuario_id_fkey" FOREIGN KEY ("usuario_id") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE NO ACTION;

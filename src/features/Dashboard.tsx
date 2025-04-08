@@ -11,7 +11,7 @@ import {
   ChevronRight,
   BrainCircuit,
 } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useRouter } from "next/navigation"
 import { siteConfig } from "@/config/site-config"
 
@@ -30,16 +30,19 @@ const Dashboard = () => {
   const [aiTip, setAiTip] = useState<string>("")
 
   // Tips from AI coach
-  const aiTips = [
-    "Beba água regularmente para ajudar a controlar a sensação de fome durante o jejum.",
-    "Chás sem adoçantes são permitidos e podem ajudar a manter o jejum mais confortável.",
-    "A autofagia é mais intensa após 16-18 horas de jejum, continue firme!",
-    "Sentindo fome intensa? Tente uma caminhada leve ou meditação por 10 minutos.",
-    "O jejum intermitente melhora a sensibilidade à insulina, ajudando no controle da glicemia.",
-    "Receba benefícios cognitivos: o jejum aumenta a produção de BDNF, proteína que promove a saúde cerebral.",
-    "Já completou 70% do seu jejum? A autopurificação celular está acontecendo agora!",
-    "A sensação de fome vem em ondas. Se persistir, espere 20 minutos - ela geralmente passa.",
-  ]
+  const aiTips = useMemo(
+    () => [
+      "Beba água regularmente para ajudar a controlar a sensação de fome durante o jejum.",
+      "Chás sem adoçantes são permitidos e podem ajudar a manter o jejum mais confortável.",
+      "A autofagia é mais intensa após 16-18 horas de jejum, continue firme!",
+      "Sentindo fome intensa? Tente uma caminhada leve ou meditação por 10 minutos.",
+      "O jejum intermitente melhora a sensibilidade à insulina, ajudando no controle da glicemia.",
+      "Receba benefícios cognitivos: o jejum aumenta a produção de BDNF, proteína que promove a saúde cerebral.",
+      "Já completou 70% do seu jejum? A autopurificação celular está acontecendo agora!",
+      "A sensação de fome vem em ondas. Se persistir, espere 20 minutos - ela geralmente passa.",
+    ],
+    []
+  )
 
   // Check if user needs onboarding
   useEffect(() => {
@@ -63,7 +66,7 @@ const Dashboard = () => {
     }, 3 * 60 * 1000)
 
     return () => clearInterval(intervalId)
-  }, [])
+  }, [aiTips])
 
   const handleStartFast = () => {
     if (!currentPlan) {
